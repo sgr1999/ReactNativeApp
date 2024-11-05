@@ -1,6 +1,7 @@
 import { StyleSheet, View, Text, Pressable } from "react-native";
 function ListedItems(props) {
     return (
+        
         <View style={styles.itemListView}>
 
             <Pressable
@@ -16,6 +17,7 @@ function ListedItems(props) {
                 </View>
             </Pressable>
         </View>
+        
     );
 }
 

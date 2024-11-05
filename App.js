@@ -10,57 +10,82 @@ import {
 } from "react-native";
 import ListedItems from "./components/ListedItems";
 import InputHandler from "./components/InputHandler";
+import { StatusBar } from "expo-status-bar";
 
 export default function App() {
   const [courseGoal, setCourseGoal] = useState([]);
+  const [modalIsVisible, setModalIsVisible] = useState(false);
 
   function addInputHandler(enteredGoalText) {
     setCourseGoal((currentCourseGoal) => [
       ...currentCourseGoal,
       { text: enteredGoalText, id: Math.random().toString() },
     ]);
+    setModalIsVisible(false);
   }
 
   function deleteGoalHandler(id) {
-    console.log(id)
+    console.log(id);
     setCourseGoal((currentCourseGoal) => {
-      return currentCourseGoal.filter((goal) => goal.id !== id)
-    })
+      return currentCourseGoal.filter((goal) => goal.id !== id);
+    });
+  }
+
+  function visibleInputHandler() {
+    setModalIsVisible(true);
+  }
+
+  function endInputHandler() {
+    setModalIsVisible(false);
   }
 
   return (
-    <View style={styles.container}>
-      <InputHandler onAddItem={addInputHandler} />
+    <>
+      <StatusBar style="light" />
+        <View style={styles.container}>
+          <Button
+            title="Add New Item"
+            color="#5e0acc"
+            onPress={visibleInputHandler}
+          />
 
-      <View style={styles.itemList}>
-        <Text>Item List</Text>
-        <FlatList
-          data={courseGoal}
-          renderItem={(itemData) => {
-            return <ListedItems
-              text={itemData.item.text}
-              id={itemData.item.id}
-              onDeleteItem={deleteGoalHandler}
-            />;
-          }}
-          keyExtractor={(item, index) => {
-            return item.id;
-          }}
-          alwaysBounceVertical={false}
-        />
-      </View>
-    </View>
+          <InputHandler
+            visible={modalIsVisible}
+            onAddItem={addInputHandler}
+            onCancel={endInputHandler}
+          />
+
+          <View style={styles.itemList}>
+            <Text>Item List</Text>
+            <FlatList
+              data={courseGoal}
+              renderItem={(itemData) => {
+                return (
+                  <ListedItems
+                    text={itemData.item.text}
+                    id={itemData.item.id}
+                    onDeleteItem={deleteGoalHandler}
+                  />
+                );
+              }}
+              keyExtractor={(item, index) => {
+                return item.id;
+              }}
+              alwaysBounceVertical={false}
+            />
+          </View>
+        </View>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 28,
+    paddingTop: 50,
+    paddingHorizontal: 16,
   },
   itemList: {
-    borderTopWidth: 1,
-    borderColor: "#ccccc",
     flex: 5,
   },
 });
